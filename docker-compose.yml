@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+  app:
+    container_name: app
+    build: ./app
+    command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    volumes:
+      - ./app:/app
+    ports:
+      - 8000:8000
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - C_FORCE_ROOT=true
+    restart: always
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+    ports:
+      - 6379:6379
+
+  celery_worker:
+    container_name: celery_worker
+    build: ./app
+    command: celery -A celery_worker.celery worker --loglevel=info --concurrency=1
+    volumes:
+      - ./app:/app
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - C_FORCE_ROOT=true
+    depends_on:
+      - app
+      - redis
+
+  flower:
+    container_name: flower
+    build: ./app
+    command: celery --app=celery_worker.celery flower --port=5555 --loglevel=info
+    ports:
+      - 5556:5555
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - app
+      - redis
+      - celery_worker
