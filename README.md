@@ -36,7 +36,7 @@ Python API for piloting windows automation for Marvelous using FastAPI, Celery a
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env file or directly to the docker-compose.yml environment varaibles.
+To run this project, you will need to add the following environment variables to your .env file or directly to the docker-compose.yml environment variables.
 
 `CELERY_BROKER_URL=redis://redis:6379/0`
 
@@ -68,7 +68,7 @@ To deploy this project run :
 
 ## Flower Task Manager Interface
 
-Flower is a task manager connected to Celery to view, manage and control all your celery's workers and theirs jobs/request.
-You can check all the request standing in the queue of a worker, view the priority assigned to certains jobs and see their processing.
+Flower is a task manager connected to Celery to view, manage and control all your celery's workers and theirs jobs/requests.
+You can check all the requests standing in the queue of a worker, view the priority assigned to certains jobs and see their processing.
 
 [Flower Interface](http://localhost:5556/)
