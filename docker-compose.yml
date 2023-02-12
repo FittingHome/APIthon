@@ -3,10 +3,10 @@ version: "3"
 services:
   app:
     container_name: app
-    build: ./app
+    build: ./fastapi
     command: sh -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
     volumes:
-      - ./app:/app
+      - ./fastapi:/app
     ports:
       - 8000:8000
     environment:
@@ -23,10 +23,10 @@ services:
 
   celery_worker:
     container_name: celery_worker
-    build: ./app
+    build: ./fastapi
     command: celery -A celery_worker.celery worker --loglevel=info --concurrency=1
     volumes:
-      - ./app:/app
+      - ./fastapi:/app
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
@@ -37,7 +37,7 @@ services:
 
   flower:
     container_name: flower
-    build: ./app
+    build: ./fastapi
     command: celery --app=celery_worker.celery flower --port=5555 --loglevel=info
     ports:
       - 5556:5555
